@@ -1,0 +1,21 @@
+FROM python:3.8-slim-bullseye
+
+USER root
+RUN groupadd -r airflow_middleware && useradd -r -g airflow_middleware airflow_middleware
+ENV TZ="Asia/Jakarta"
+RUN apt-get update \
+ && apt-get install -y tzdata curl wget \
+ && rm -Rf /var/lib/apt/lists/*
+
+ COPY --chown=0:0 ./temp/java/ /usr/local/java/
+ COPY --chown=0:0 ./package/bin/ /usr/local/airflow_middleware/
+ 
+ RUN ln -s /usr/local/java/jdk-17.0.5+8/bin/java /usr/local/bin/java && mkdir /usr/local/airflow_middleware/.packscript
+ RUN chown airflow_middleware:airflow_middleware  /usr/local/airflow_middleware/.packscript
+ ENV JAVA_HOME="/usr/local/java/jdk-17.0.5+8"
+
+USER airflow_middleware
+COPY --chown=airflow_middleware ./package/etc/ /home/airflow_middleware/
+RUN mkdir /home/airflow_middleware/logs 
+EXPOSE 8080
+CMD ["/usr/local/airflow_middleware/airflow-middleware.sh","run"]

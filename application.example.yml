@@ -1,0 +1,23 @@
+micronaut:
+  application:
+    name: airflow-mid-api
+  server:
+    host: "0.0.0.0"
+    port: 8080
+
+middleware-db:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: "postgres"
+  db-name: airflow-middleware
+
+datahub:
+  host-frontend: http://localhost:9002
+  host-gms: http://localhost:8081
+  token: ""
+
+airflow:
+  host: localhost:9003
+  authorization: ""
+  trigger-interval: 5m
